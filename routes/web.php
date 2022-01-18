@@ -20,9 +20,15 @@ use Illuminate\Support\Facades\Auth;
 // });
 
 Route::get('/', 'WelcomeController@index')->name('welcome');
+Route::get('/home', 'WelcomeController@home');
 
 Auth::routes();
 
-Route::get('/admin/home', 'HomeController@index')->name('admin.home');
+Route::get('/employee/home', 'HomeController@employee')->name('employee.home');
 
-Route::resource('/admin/userMgnt', 'UserManagementController');
+Route::middleware('admin')->group(function () {
+    Route::get('/admin/home', 'HomeController@admin')->name('admin.home');
+    Route::resource('/admin/user_mgnt', 'Admin\UserManagementController');
+    Route::get('/user_filter', 'Admin\UserManagementController@filter');
+    Route::resource('/admin/sys_mgnt/dept', 'Admin\DepartmentController');
+});

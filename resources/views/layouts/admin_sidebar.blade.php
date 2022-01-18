@@ -11,22 +11,15 @@
                 </ul>
             </li>
             <li>
-                <a href="#" data-toggle="collapse" data-target="#submenu-2"><i class="fa fa-fw fa-star"></i> MENU 2
+                <a href="#" data-toggle="collapse" data-target="#submenu-2"><i class="fa fa-fw fa-star"></i> SYSTEM MANAGEMENT
                     <i class="fa fa-fw fa-angle-down pull-right"></i></a>
                 <ul id="submenu-2" class="collapse">
-                    <li><a href="#"><i class="fa fa-angle-double-right"></i> SUBMENU 2.1</a></li>
-                    <li><a href="#"><i class="fa fa-angle-double-right"></i> SUBMENU 2.2</a></li>
-                    <li><a href="#"><i class="fa fa-angle-double-right"></i> SUBMENU 2.3</a></li>
+                    <li><a href="/admin/sys_mgnt/dept"><i class="fa fa-angle-double-right"></i> ADD DEPARTMENT</a></li>
+                    <li><a href="#"><i class="fa fa-angle-double-right"></i> ADD POSITION</a></li>
                 </ul>
             </li>
             <li>
-                <a href="investigaciones/favoritas"><i class="fa fa-fw fa-user-plus"></i> MENU 3</a>
-            </li>
-            <li>
-                <a href="sugerencias"><i class="fa fa-fw fa-paper-plane-o"></i> MENU 4</a>
-            </li>
-            <li>
-                <a href="/admin/userMgnt"><i class="fa fa-fw fa fa-user-plus"></i> USER MANAGEMENT</a>
+                <a href="/admin/user_mgnt"><i class="fa fa-fw fa fa-user-plus"></i> USER MANAGEMENT</a>
             </li>
         </ul>
     </div>

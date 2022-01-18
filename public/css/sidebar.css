@@ -2,8 +2,8 @@
 
 @media(min-width:768px) {
     body {
-        margin-top: 0px;
-        margin-left: 225px;
+        /* margin-top: 0px;
+        margin-left: 225px; */
     }
 
     /*html, body, #wrapper, #page-wrapper {height: 100%; overflow: hidden;}*/
