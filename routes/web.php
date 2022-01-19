@@ -31,4 +31,6 @@ Route::middleware('admin')->group(function () {
     Route::resource('/admin/user_mgnt', 'Admin\UserManagementController');
     Route::get('/user_filter', 'Admin\UserManagementController@filter');
     Route::resource('/admin/sys_mgnt/dept', 'Admin\DepartmentController');
+    Route::resource('/admin/sys_mgnt/position', 'Admin\PositionController');
+    Route::get('/position_filter', 'Admin\PositionController@filter');
 });
