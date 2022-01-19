@@ -14,8 +14,8 @@
                 <a href="#" data-toggle="collapse" data-target="#submenu-2"><i class="fa fa-fw fa-star"></i> SYSTEM MANAGEMENT
                     <i class="fa fa-fw fa-angle-down pull-right"></i></a>
                 <ul id="submenu-2" class="collapse">
-                    <li><a href="/admin/sys_mgnt/dept"><i class="fa fa-angle-double-right"></i> ADD DEPARTMENT</a></li>
-                    <li><a href="#"><i class="fa fa-angle-double-right"></i> ADD POSITION</a></li>
+                    <li><a href="/admin/sys_mgnt/dept"><i class="fa fa-angle-double-right"></i> DEPARTMENT</a></li>
+                    <li><a href="#"><i class="fa fa-angle-double-right"></i> POSITION</a></li>
                 </ul>
             </li>
             <li>

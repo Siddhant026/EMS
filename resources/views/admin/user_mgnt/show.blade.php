@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @push('scripts')
-    <script src="{{ asset('js/user_mgnt.js') }}"></script>
+    <script src="{{ asset('js/admin/user_mgnt.js') }}"></script>
     <script>
         var login_id = {{ Auth::user()->id }};
         var token = "{{ csrf_token() }}";

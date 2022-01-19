@@ -1,9 +1,12 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
+
+use App\department;
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class DepartmentController extends Controller
 {
@@ -14,7 +17,8 @@ class DepartmentController extends Controller
      */
     public function index()
     {
-        //
+        $departments = department::all();
+        return view('admin.system_mgnt.department.show', compact('departments'));
     }
 
     /**
@@ -24,7 +28,7 @@ class DepartmentController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.system_mgnt.department.create');
     }
 
     /**
@@ -35,7 +39,11 @@ class DepartmentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validator($request->all())->validate();
+        department::create([
+            'name' => $request->all()['name'],
+        ]);
+        return redirect('/admin/sys_mgnt/dept');
     }
 
     /**
@@ -57,7 +65,8 @@ class DepartmentController extends Controller
      */
     public function edit($id)
     {
-        //
+        $dept = department::where('id', '=', $id)->get();
+        return view('admin.system_mgnt.department.edit', compact('dept'));
     }
 
     /**
@@ -69,7 +78,9 @@ class DepartmentController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $this->validator($request->all())->validate();
+        department::where('id', '=', $id)->update(array('name' => $request->all()['name']));
+        return redirect('/admin/sys_mgnt/dept');
     }
 
     /**
@@ -80,6 +91,16 @@ class DepartmentController extends Controller
      */
     public function destroy($id)
     {
-        //
+        department::destroy($id);
+        //return redirect('/admin/sys_mgnt/dept');
+    }
+
+    protected function validator(array $data)
+    {
+        return Validator::make($data, [
+            'name' => 'required|max:255|unique:departments',
+           // 'email' => 'required|email|max:255|unique:users',
+            //'password' => 'required|min:6|confirmed',
+        ]);
     }
 }
