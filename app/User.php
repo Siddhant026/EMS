@@ -29,4 +29,5 @@ class User extends Authenticatable
 
     const ADMIN_ROLE = 0;
     const EMPLOYEE_ROLE = 1;
+    const MANAGER_ROLE = 2;
 }

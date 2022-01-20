@@ -33,4 +33,5 @@ Route::middleware('admin')->group(function () {
     Route::resource('/admin/sys_mgnt/dept', 'Admin\DepartmentController');
     Route::resource('/admin/sys_mgnt/position', 'Admin\PositionController');
     Route::get('/position_filter', 'Admin\PositionController@filter');
+    Route::resource('/admin/emp_mgnt/employee', 'Admin\EmployeeController');
 });
