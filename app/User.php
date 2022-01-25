@@ -30,4 +30,9 @@ class User extends Authenticatable
     const ADMIN_ROLE = 0;
     const EMPLOYEE_ROLE = 1;
     const MANAGER_ROLE = 2;
+
+    public function user() {
+        // return $this->hasOne('App\User', 'user_id');
+        return $this->hasOne(Employee::class);
+    }
 }

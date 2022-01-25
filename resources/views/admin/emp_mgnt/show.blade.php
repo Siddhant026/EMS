@@ -34,7 +34,27 @@
                         placeholder="Search Department" /> --}}
                     <select name="search_dept_id" id="search_dept_id" class="form-control" required autofocus>
                         <option selected value="">Search Department</option>
-                        {{-- @foreach ($departments as $department)
+                        @foreach ($departments as $department)
+                            <option value="{{ $department->id }}">{{ $department->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <label for="pincode" class="col-md-1">Pincode</label>
+                <div class="col-md-3">
+                    <input type="number" name="search_pincode" id="search_pincode" class="col-md-4 form-control"
+                        placeholder="Search Pincode" />
+                </div>
+                <div class="col-md-1"></div>
+                <label for="date_of_joining" class="col-md-1">Date of Joining</label>
+                <div class="col-md-3">
+                    {{-- <input type="text" name="search_department" id="search_department" class="col-md-4 form-control"
+                        placeholder="Search Department" /> --}}
+                    <input id="search_date_of_joining" type="text" class="form-control" name="search_date_of_joining"
+                        placeholder="Search Date of Joining" required autofocus>
+                    {{-- @foreach ($departments as $department)
                             <option value="{{ $department->id }}">{{ $department->name }}</option>
                         @endforeach --}}
                     </select>
@@ -55,7 +75,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    
+
                 </tbody>
             </table>
         </div>
