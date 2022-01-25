@@ -25,7 +25,7 @@ function changeName() {
 }
 
 function changePositions() {
-    var department = JSON.parse(document.getElementById("dept_id").value);
+    var department = JSON.parse(document.getElementById("department").value); 
     var name = '';
     //console.log(department['id']);
     fetch_position_data(name, department['id']);
@@ -53,7 +53,7 @@ function fetch_position_data(name = '', dept_id = '') {
                 // }
                 //console.log(department.name);
                 content = '<option value="'+ data.positions[i].id +'">'+ data.positions[i].name +'</option>';    
-                $("#position_id").append(content);
+                $("#position").append(content);
             }
         }
     })

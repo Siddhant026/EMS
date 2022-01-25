@@ -46,29 +46,31 @@ class EmployeeController extends Controller
      */
     public function store(Request $request)
     {
-        //$this->validator($request->all())->validate();
-        //error_log('data validated');
         $user = json_decode($request->all()['email']);
-        error_log($user->id);
         $dobtime = strtotime($request->all()['dob']);
         $dob = date('Y-m-d', $dobtime);
         $date_of_joiningtime = strtotime($request->all()['date_of_joining']);
         $date_of_joining = date('Y-m-d', $date_of_joiningtime);
-        foreach ($request->all() as $key => $value) {
-            echo $key . " " . $value . "<br>";
+        $department = json_decode($request->all()['department']);
+
+        $this->validator(array("_token" => $request->all()['_token'], "email" => $user->id, "address" => $request->all()['address'], "pincode" => $request->all()['pincode'], "dob" => $dob, "date_of_joining" => $date_of_joining, "role" => $request->all()['role'], "department" => $department->id, "position" => $request->all()['position'],))->validate();
+
+        try {
+            Employee::create([
+                'user_id' => $user->id,
+                'address' => $request->all()['address'],
+                'pincode' => $request->all()['pincode'],
+                'dob' => $dob,
+                'date_of_joining' => $date_of_joining,
+                'position_id' => $request->all()['position'],
+            ]);
+            User::where('id', '=', $user->id)->update(array('role' => $request->all()['role']));
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
         }
-        //error_log($newformat);
-        $this->validator(array("_token" => $request->all()['_token'], "email" => $user->id, "address" => $request->all()['address'], "pincode" => $request->all()['pincode'], "dob" => $dob, "date_of_joining" => $date_of_joining, "role" => $request->all()['role'], "position_id" => $request->all()['position_id']))->validate();
-        //error_log('min max data validated');
-        Employee::create([
-            'user_id' => $user->id,
-            'address' => $request->all()['address'],
-            'pincode' => $request->all()['pincode'],
-            'dob' => $dob,
-            'date_of_joining' => $date_of_joining,
-            'position_id' => $request->all()['position_id'],
-        ]);
-        User::where('id', '=', $user->id)->update(array('role' => $request->all()['role']));
+
         return redirect('/admin/emp_mgnt/employee');
     }
 
@@ -120,13 +122,14 @@ class EmployeeController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'email' => 'required|max:255|exists:users,id',
+            'email' => 'required|max:255|exists:users,id|unique:employees,user_id',
             'address' => 'required|max:255',
             'pincode' => 'required|numeric',
             'dob' => 'required|date',
             'date_of_joining' => 'required|date|after:dob',
             'role' => 'required|max:' . User::MANAGER_ROLE . '|min:' . User::EMPLOYEE_ROLE,
-            'position_id' => 'required|max:255|exists:positions,id',
+            'department' => 'required|max:255|exists:departments,id',
+            'position' => 'required|max:255|exists:positions,id',
             // 'email' => 'required|email|max:255|unique:users', //exists:emails
             //'password' => 'required|min:6|confirmed',
         ]);
@@ -143,19 +146,13 @@ class EmployeeController extends Controller
             $date_of_joining = $request->get('date_of_joining');
             $date_of_joiningtime = strtotime($date_of_joining);
             $date_of_joining = date('Y-m-d', $date_of_joiningtime);
+
             if (empty($dept_id)) {
                 $where = [['users.name', 'like', '%' . $name . '%'], ['pincode', 'like', '%' . $pincode . '%']];
             } else {
                 $where = [['users.name', 'like', '%' . $name . '%'], ['dept_id', '=', $dept_id], ['pincode', 'like', '%' . $pincode . '%']];
             }
-            // $employees = User::find(5);
-            // dd($employees->user);
-            // foreach ($employees as $employee) {
-            //     print_r($employee->user);
-            // }
-            //dd($employees->user->name);
-            // $positions = Position::find(6);
-            // $positions = Position::select('positions.name as pname', 'positions.id as pid', 'departments.id as did', 'departments.name as dname')->join('departments', 'positions.dept_id', '=', 'departments.id')->get();
+
             $employees = Employee::join('users', 'employees.user_id', '=', 'users.id')
                 ->join('positions', 'employees.position_id', '=', 'positions.id')
                 ->join('departments', 'positions.dept_id', '=', 'departments.id')
@@ -163,21 +160,11 @@ class EmployeeController extends Controller
                 ->where($where)
                 ->whereDate('date_of_joining', '>', $date_of_joining)
                 ->get();
-            dd($employees);
-            //dd($positions->department);
-            // if (empty($dept_id)) {
-            //     $positions = Position::where([['name', 'like', '%' . $name . '%']])
-            //         ->get();
-            // } else {
-            //     $positions = Position::where([['name', 'like', '%' . $name . '%'], ['dept_id', '=', $dept_id]])
-            //         ->get();
-            // }
-            // $departments = department::all();
-            // $data = array(
-            //     'positions' => $positions,
-            //     //'departments' => $departments
-            // );
-            // echo json_encode($data);
+
+            $data = array(
+                'employees' => $employees
+            );
+            echo json_encode($data);
         }
     }
 }

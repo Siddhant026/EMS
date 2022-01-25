@@ -26,7 +26,9 @@
                         <select name="email" id="email" onchange="changeName();" class="form-control" required autofocus>
                             <option selected value="">Open this select menu</option>
                             @foreach ($users as $user)
-                                <option value="{{ $user }}">{{ $user->email }}</option>
+                                @if ($user->id != Auth::user()->id)
+                                    <option value="{{ $user }}">{{ $user->email }}</option>
+                                @endif
                             @endforeach
                         </select>
 
@@ -37,7 +39,7 @@
                         @endif
                     </div>
                 </div>
-                
+
                 <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }}">
                     <label for="name" class="col-md-4 control-label">Name</label>
 
@@ -56,7 +58,8 @@
                     <label for="address" class="col-md-4 control-label">Address</label>
 
                     <div class="col-md-6">
-                        <input id="address" type="text" class="form-control" name="address" required autofocus>
+                        <input id="address" type="text" class="form-control" name="address"
+                            value="{{ old('address') }}" required autofocus>
 
                         @if ($errors->has('address'))
                             <span class="help-block">
@@ -70,7 +73,8 @@
                     <label for="pincode" class="col-md-4 control-label">Pincode</label>
 
                     <div class="col-md-6">
-                        <input id="pincode" type="number" class="form-control" name="pincode" required autofocus>
+                        <input id="pincode" type="number" class="form-control" name="pincode"
+                            value="{{ old('pincode') }}" required autofocus>
 
                         @if ($errors->has('pincode'))
                             <span class="help-block">
@@ -84,7 +88,8 @@
                     <label for="dob" class="col-md-4 control-label">Date of Birth</label>
 
                     <div class="col-md-6">
-                        <input id="dob" type="text" class="form-control" name="dob" required autofocus>
+                        <input id="dob" type="text" class="form-control" name="dob" value="{{ old('dob') }}" required
+                            autofocus>
                         {{-- <input type='text' class="form-control" id='date'/> --}}
 
                         @if ($errors->has('dob'))
@@ -99,7 +104,8 @@
                     <label for="date_of_joining" class="col-md-4 control-label">Date of Joining</label>
 
                     <div class="col-md-6">
-                        <input id="date_of_joining" type="text" class="form-control" name="date_of_joining" required autofocus>
+                        <input id="date_of_joining" type="text" class="form-control" name="date_of_joining"
+                            value="{{ old('date_of_joining') }}" required autofocus>
 
                         @if ($errors->has('date_of_joining'))
                             <span class="help-block">
@@ -132,44 +138,45 @@
                     </div>
                 </div>
 
-                <div class="form-group{{ $errors->has('dept_id') ? ' has-error' : '' }}">
-                    <label for="dept_id" class="col-md-4 control-label">Department</label>
+                <div class="form-group{{ $errors->has('department') ? ' has-error' : '' }}">
+                    <label for="department" class="col-md-4 control-label">Department</label>
 
                     <div class="col-md-6">
                         {{-- <input id="dept_id" type="text" class="form-control" name="dept_id" 
                             required autofocus> --}}
-                        <select name="dept_id" id="dept_id" onchange="changePositions();" class="form-control" required autofocus>
-                            <option selected>Open this select menu</option>
+                        <select name="department" id="department" onchange="changePositions();" class="form-control"
+                            required autofocus>
+                            <option selected value="">Open this select menu</option>
                             @foreach ($departments as $department)
                                 <option value="{{ $department }}">{{ $department->name }}</option>
                             @endforeach
                         </select>
 
-                        @if ($errors->has('dept_id'))
+                        @if ($errors->has('department'))
                             <span class="help-block">
-                                <strong>{{ $errors->first('dept_id') }}</strong>
+                                <strong>{{ $errors->first('department') }}</strong>
                             </span>
                         @endif
                     </div>
                 </div>
 
-                <div class="form-group{{ $errors->has('position_id') ? ' has-error' : '' }}">
-                    <label for="position_id" class="col-md-4 control-label">Position</label>
+                <div class="form-group{{ $errors->has('position') ? ' has-error' : '' }}">
+                    <label for="position" class="col-md-4 control-label">Position</label>
 
                     <div class="col-md-6">
                         {{-- <input id="dept_id" type="text" class="form-control" name="dept_id" 
                             required autofocus> --}}
-                        <select name="position_id" id="position_id" class="form-control" required autofocus>
-                            <option selected>Open this select menu</option>
-                            
+                        <select name="position" id="position" class="form-control" required autofocus>
+                            <option selected value="">Open this select menu</option>
+
                             {{-- @foreach ($departments as $department)
                                 <option value="{{ $position->id }}">{{ $position->name }}</option>
                             @endforeach --}}
                         </select>
 
-                        @if ($errors->has('position_id'))
+                        @if ($errors->has('position'))
                             <span class="help-block">
-                                <strong>{{ $errors->first('position_id') }}</strong>
+                                <strong>{{ $errors->first('position') }}</strong>
                             </span>
                         @endif
                     </div>
