@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Position;
 use App\User;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class EmployeeController extends Controller
@@ -55,21 +54,8 @@ class EmployeeController extends Controller
 
         $this->validator(array("_token" => $request->all()['_token'], "email" => $user->id, "address" => $request->all()['address'], "pincode" => $request->all()['pincode'], "dob" => $dob, "date_of_joining" => $date_of_joining, "role" => $request->all()['role'], "department" => $department->id, "position" => $request->all()['position'],))->validate();
 
-        try {
-            Employee::create([
-                'user_id' => $user->id,
-                'address' => $request->all()['address'],
-                'pincode' => $request->all()['pincode'],
-                'dob' => $dob,
-                'date_of_joining' => $date_of_joining,
-                'position_id' => $request->all()['position'],
-            ]);
-            User::where('id', '=', $user->id)->update(array('role' => $request->all()['role']));
-
-            DB::commit();
-        } catch (\Exception $e) {
-            DB::rollback();
-        }
+        $employee = new Employee();
+        $employee->create_function($user->id, $request->all()['address'], $request->all()['pincode'], $dob, $date_of_joining, $request->all()['position'], $request->all()['role']);
 
         return redirect('/admin/emp_mgnt/employee');
     }
@@ -153,13 +139,8 @@ class EmployeeController extends Controller
                 $where = [['users.name', 'like', '%' . $name . '%'], ['dept_id', '=', $dept_id], ['pincode', 'like', '%' . $pincode . '%']];
             }
 
-            $employees = Employee::join('users', 'employees.user_id', '=', 'users.id')
-                ->join('positions', 'employees.position_id', '=', 'positions.id')
-                ->join('departments', 'positions.dept_id', '=', 'departments.id')
-                ->select('users.name as uname', 'employees.dob as dob', 'employees.address as address', 'employees.pincode as pincode', 'users.email as email', 'employees.date_of_joining as date_of_joining', 'positions.name as pname', 'departments.name as dname', 'users.role as role', 'departments.id as dept_id')
-                ->where($where)
-                ->whereDate('date_of_joining', '>', $date_of_joining)
-                ->get();
+            $employee = new Employee();
+            $employees = $employee->show_emp($where, $date_of_joining);
 
             $data = array(
                 'employees' => $employees

@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Employee extends Model
 {
@@ -10,8 +11,39 @@ class Employee extends Model
         'user_id', 'address', 'pincode', 'dob', 'date_of_joining', 'position_id'
     ];
 
-    public function position() {
+    public function position()
+    {
         return $this->hasOne('App\Position', 'position_id');
+    }
+
+    public function create_function($user_id, $address, $pincode, $dob, $date_of_joining, $position_id, $role)
+    {
+        try {
+            Employee::create([
+                'user_id' => $user_id,
+                'address' => $address,
+                'pincode' => $pincode,
+                'dob' => $dob,
+                'date_of_joining' => $date_of_joining,
+                'position_id' => $position_id,
+            ]);
+            User::where('id', '=', $user_id)->update(array('role' => $role));
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+        }
+    }
+
+    public function show_emp($where, $date_of_joining)
+    {
+        return Employee::join('users', 'employees.user_id', '=', 'users.id')
+        ->join('positions', 'employees.position_id', '=', 'positions.id')
+        ->join('departments', 'positions.dept_id', '=', 'departments.id')
+        ->select('users.name as uname', 'employees.dob as dob', 'employees.address as address', 'employees.pincode as pincode', 'users.email as email', 'employees.date_of_joining as date_of_joining', 'positions.name as pname', 'departments.name as dname', 'users.role as role', 'departments.id as dept_id')
+        ->where($where)
+        ->whereDate('date_of_joining', '>', $date_of_joining)
+        ->get();
     }
 
     // public function user() {

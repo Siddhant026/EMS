@@ -40,9 +40,8 @@ class DepartmentController extends Controller
     public function store(Request $request)
     {
         $this->validator($request->all())->validate();
-        department::create([
-            'name' => $request->all()['name'],
-        ]);
+        $department = new department();
+        $department->create_dept($request->all()['name']);
         return redirect('/admin/sys_mgnt/dept');
     }
 
@@ -65,7 +64,8 @@ class DepartmentController extends Controller
      */
     public function edit($id)
     {
-        $dept = department::where('id', '=', $id)->get();
+        $department = new department();
+        $dept = $department->get_dept_by_id($id);
         return view('admin.system_mgnt.department.edit', compact('dept'));
     }
 
@@ -79,7 +79,8 @@ class DepartmentController extends Controller
     public function update(Request $request, $id)
     {
         $this->validator($request->all())->validate();
-        department::where('id', '=', $id)->update(array('name' => $request->all()['name']));
+        $department = new department();
+        $department->update_dept($id, $request->all()['name']);
         return redirect('/admin/sys_mgnt/dept');
     }
 
@@ -99,7 +100,7 @@ class DepartmentController extends Controller
     {
         return Validator::make($data, [
             'name' => 'required|max:255|unique:departments',
-           // 'email' => 'required|email|max:255|unique:users',
+            // 'email' => 'required|email|max:255|unique:users',
             //'password' => 'required|min:6|confirmed',
         ]);
     }

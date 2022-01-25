@@ -31,8 +31,21 @@ class User extends Authenticatable
     const EMPLOYEE_ROLE = 1;
     const MANAGER_ROLE = 2;
 
-    public function user() {
+    public function user()
+    {
         // return $this->hasOne('App\User', 'user_id');
         return $this->hasOne(Employee::class);
+    }
+
+    public function update_user($id, $name, $email, $password)
+    {
+        User::where('id', $id)
+            ->update(array('name' => $name, 'email' => $email, 'password' => $email));
+    }
+
+    public function get_user($where)
+    {
+        return User::where($where)
+            ->get();
     }
 }

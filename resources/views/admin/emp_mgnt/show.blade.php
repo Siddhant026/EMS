@@ -5,6 +5,8 @@
     <script>
         var login_id = {{ Auth::user()->id }};
         var token = "{{ csrf_token() }}";
+        var employee_role = {{ App\User::EMPLOYEE_ROLE }}
+        var manager_role = {{ App\User::MANAGER_ROLE }}
     </script>
 @endpush
 
@@ -70,12 +72,26 @@
                 <thead>
                     <tr>
                         <th>Name</th>
+                        <th>Date of Birth</th>
+                        <th>Address</th>
+                        <th>Pincode</th>
+                        <th>Email</th>
+                        <th>Date of Joining</th>
+                        <th>Position</th>
                         <th>Department</th>
+                        <th>Role</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-
+                    {{-- <div class="row">
+                        <div class="col-md-1" style="margin-right: 20px">
+                            <form action="/admin/sys_mgnt/position/'+ data.employees[i].id +'/edit" method="get"><input
+                                    type="submit" class="btn btn-warning" value="Edit"></form>
+                        </div>
+                        <div class="col-md-1"><button class="btn btn-danger"
+                                onclick="delete_position('+ data.employees[i].id +')">Delete</button></div>
+                    </div> --}}
                 </tbody>
             </table>
         </div>

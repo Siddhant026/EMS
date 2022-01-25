@@ -43,11 +43,8 @@ class PositionController extends Controller
     {
         //error_log($request->all()['dept_id']);
         $this->validator($request->all())->validate();
-        error_log('data validated');
-        Position::create([
-            'name' => $request->all()['name'],
-            'dept_id' => $request->all()['dept_id'],
-        ]);
+        $position = new Position();
+        $position->create_position($request->all()['name'], $request->all()['dept_id']);
         return redirect('/admin/sys_mgnt/position');
     }
 
@@ -85,7 +82,8 @@ class PositionController extends Controller
     public function update(Request $request, $id)
     {
         $this->validator($request->all())->validate();
-        Position::where('id', '=', $id)->update(array('name' => $request->all()['name'], 'dept_id' => $request->all()['dept_id']));
+        $position = new Position();
+        $position->update_position($id, $request->all()['name'], $request->all()['dept_id']);
         return redirect('/admin/sys_mgnt/position');
     }
 
@@ -116,12 +114,14 @@ class PositionController extends Controller
             $name = $request->get('name');
             $dept_id = $request->get('dept_id');
             if (empty($dept_id)) {
-                $positions = Position::where([['name', 'like', '%' . $name . '%']])
-                    ->get();
+                $where = [['name', 'like', '%' . $name . '%']];
             } else {
-                $positions = Position::where([['name', 'like', '%' . $name . '%'], ['dept_id', '=', $dept_id]])
-                    ->get();
+                $where = [['name', 'like', '%' . $name . '%'], ['dept_id', '=', $dept_id]];
             }
+
+            $position = new Position();
+            $positions = $position->get_position($where);
+
             $departments = department::all();
             $data = array(
                 'positions' => $positions,

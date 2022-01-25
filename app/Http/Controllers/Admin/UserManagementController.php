@@ -74,9 +74,7 @@ class UserManagementController extends Controller
      */
     public function edit($id)
     {
-        //error_log("edit ".$id);
-        $user = User::where('id', '=', $id)
-            ->get();
+        $user = User::find($id);
         //error_log($user);
         return view('admin.user_mgnt.edit', compact('user'));
     }
@@ -90,16 +88,17 @@ class UserManagementController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if(strcasecmp(Auth::user()->emial, $request->all()['email'])) {
+        if (strcasecmp(Auth::user()->emial, $request->all()['email'])) {
             error_log('both email same');
             $this->validatorSameEmail($request->all())->validate();
         } else {
             error_log('both email different');
             $this->validator($request->all())->validate();
         }
-        User::where('id', $id)
-                ->update(array('name' => $request->all()['name'], 'email' => $request->all()['email'], 'password' => bcrypt($request->all()['password'])));
-        
+
+        $user = new User();
+        $user->update_user($id, $request->all()['name'], $request->all()['email'], bcrypt($request->all()['password']));
+
         return redirect('/admin/user_mgnt');
     }
 
@@ -128,8 +127,12 @@ class UserManagementController extends Controller
                 $role = 0;
             }
             //error_log('inside filter');
-            $users = User::where([['name', 'like', '%' . $name . '%'], ['email', 'like', '%' . $email . '%'], ['role', 'like', '%' . $role . '%']])
-                ->get();
+
+            $where = [['name', 'like', '%' . $name . '%'], ['email', 'like', '%' . $email . '%'], ['role', 'like', '%' . $role . '%']];
+
+            $user = new User();
+            $users = $user->get_user($where);
+
             $data = array(
                 'users' => $users
             );
