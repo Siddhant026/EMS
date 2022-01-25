@@ -36,7 +36,7 @@ function fetch_employee_data(name = '', dept_id = '', pincode = '', date_of_join
                     var role = "Manager"
                 }
                 var content = "";
-                content = '<tr><td>'+ data.employees[i].uname +'</td><td>'+ data.employees[i].dob +'</td><td>'+ data.employees[i].address +'</td><td>'+ data.employees[i].pincode +'</td><td>'+ data.employees[i].email +'</td><td>'+ data.employees[i].date_of_joining +'</td><td>'+ data.employees[i].pname +'</td><td>'+ data.employees[i].dname +'</td><td>'+ role +'</td><td><form action="/admin/emp_mgnt/employee/'+ data.employees[i].id +'/edit" method="get"><input type="submit" class="btn btn-warning" value="Edit"></form><br><button class="btn btn-danger" onclick="delete_employee('+ data.employees[i].id +')">Delete</button></td></tr>';    
+                content = '<tr><td>'+ data.employees[i].uname +'</td><td>'+ data.employees[i].dob +'</td><td>'+ data.employees[i].address +'</td><td>'+ data.employees[i].pincode +'</td><td>'+ data.employees[i].email +'</td><td>'+ data.employees[i].date_of_joining +'</td><td>'+ data.employees[i].pname +'</td><td>'+ data.employees[i].dname +'</td><td>'+ role +'</td><td><form action="/admin/emp_mgnt/employee/'+ data.employees[i].eid +'/edit" method="get"><input type="submit" class="btn btn-warning" value="Edit"></form><br><button class="btn btn-danger" onclick="delete_employee('+ data.employees[i].eid +')">Delete</button></td></tr>';    
                 $("#employeetable > tbody").append(content);
             }
         }

@@ -30,7 +30,7 @@ class Position extends Model
 
     public function get_position($where)
     {
-        return Position::where()
-            ->get($where);
+        return Position::where($where)
+            ->get();
     }
 }

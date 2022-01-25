@@ -79,7 +79,18 @@ class EmployeeController extends Controller
      */
     public function edit($id)
     {
-        //
+        $date_of_joiningtime = strtotime('');
+        $date_of_joining = date('Y-m-d', $date_of_joiningtime);
+
+        $where = [['employees.id', '=', $id]];
+
+        $employee = new Employee();
+        $employee = $employee->show_emp($where, $date_of_joining);
+        //$employee = Employee::find($id);
+        $users = User::all();
+        $departments = department::all();
+        $positions = Position::all();
+        return view('admin.emp_mgnt.edit', compact('employee', 'users', 'departments', 'positions'));
     }
 
     /**

@@ -40,7 +40,7 @@ class Employee extends Model
         return Employee::join('users', 'employees.user_id', '=', 'users.id')
         ->join('positions', 'employees.position_id', '=', 'positions.id')
         ->join('departments', 'positions.dept_id', '=', 'departments.id')
-        ->select('users.name as uname', 'employees.dob as dob', 'employees.address as address', 'employees.pincode as pincode', 'users.email as email', 'employees.date_of_joining as date_of_joining', 'positions.name as pname', 'departments.name as dname', 'users.role as role', 'departments.id as dept_id')
+        ->select('employees.id as eid', 'users.name as uname', 'employees.dob as dob', 'employees.address as address', 'employees.pincode as pincode', 'users.email as email', 'employees.date_of_joining as date_of_joining', 'positions.name as pname', 'departments.name as dname', 'users.role as role', 'departments.id as dept_id', 'positions.id as pid')
         ->where($where)
         ->whereDate('date_of_joining', '>', $date_of_joining)
         ->get();
