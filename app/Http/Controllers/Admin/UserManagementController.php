@@ -90,7 +90,7 @@ class UserManagementController extends Controller
     {
         if (strcasecmp(Auth::user()->emial, $request->all()['email'])) {
             error_log('both email same');
-            $this->validatorSameEmail($request->all())->validate();
+            $this->validator_same_email($request->all())->validate();
         } else {
             error_log('both email different');
             $this->validator($request->all())->validate();
@@ -149,7 +149,7 @@ class UserManagementController extends Controller
         ]);
     }
 
-    protected function validatorSameEmail(array $data)
+    protected function validator_same_email(array $data)
     {
         return Validator::make($data, [
             'name' => 'required|max:255',

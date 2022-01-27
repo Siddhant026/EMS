@@ -102,7 +102,19 @@ class EmployeeController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $user = json_decode($request->all()['email']);
+        $dobtime = strtotime($request->all()['dob']);
+        $dob = date('Y-m-d', $dobtime);
+        $date_of_joiningtime = strtotime($request->all()['date_of_joining']);
+        $date_of_joining = date('Y-m-d', $date_of_joiningtime);
+        $department = json_decode($request->all()['department']);
+
+        $this->validator_without_email(array("_token" => $request->all()['_token'], "address" => $request->all()['address'], "pincode" => $request->all()['pincode'], "dob" => $dob, "date_of_joining" => $date_of_joining, "role" => $request->all()['role'], "department" => $department->id, "position" => $request->all()['position'],))->validate();
+
+        $employee = new Employee();
+        $employee->update_emp($id, $request->all()['address'], $request->all()['pincode'], $dob, $date_of_joining, $request->all()['position'], $request->all()['role'], $user->id);
+
+        return redirect('/admin/emp_mgnt/employee');
     }
 
     /**
@@ -113,13 +125,30 @@ class EmployeeController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $user_id = Employee::find($id)->user_id;
+        User::destroy($user_id);
     }
 
     protected function validator(array $data)
     {
         return Validator::make($data, [
             'email' => 'required|max:255|exists:users,id|unique:employees,user_id',
+            'address' => 'required|max:255',
+            'pincode' => 'required|numeric',
+            'dob' => 'required|date',
+            'date_of_joining' => 'required|date|after:dob',
+            'role' => 'required|max:' . User::MANAGER_ROLE . '|min:' . User::EMPLOYEE_ROLE,
+            'department' => 'required|max:255|exists:departments,id',
+            'position' => 'required|max:255|exists:positions,id',
+            // 'email' => 'required|email|max:255|unique:users', //exists:emails
+            //'password' => 'required|min:6|confirmed',
+        ]);
+    }
+
+    protected function validator_without_email(array $data)
+    {
+        return Validator::make($data, [
+            //'email' => 'required|max:255|exists:users,id|unique:employees,user_id',
             'address' => 'required|max:255',
             'pincode' => 'required|numeric',
             'dob' => 'required|date',

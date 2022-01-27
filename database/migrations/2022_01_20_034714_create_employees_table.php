@@ -17,16 +17,20 @@ class CreateEmployeesTable extends Migration
             $table->increments('id');
             $table->integer('user_id')->unsigned()->unique();
             $table->foreign('user_id')
-                    ->references('id')->on('users')
-                    ->onDelete('cascade');
+                ->references('id')->on('users')
+                ->onDelete('cascade');
             $table->string('address');
             $table->integer('pincode');
             $table->date('dob');
             $table->date('date_of_joining');
             $table->integer('position_id')->unsigned();
             $table->foreign('position_id')
-                    ->references('id')->on('positions')
-                    ->onDelete('cascade');
+                ->references('id')->on('positions')
+                ->onDelete('cascade');
+            $table->integer('manager_id')->unsigned()->nullable();
+            $table->foreign('manager_id')
+                ->references('id')->on('employees')
+                ->onDelete('cascade');
             $table->timestamps();
         });
     }

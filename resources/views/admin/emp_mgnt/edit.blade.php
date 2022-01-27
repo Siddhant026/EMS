@@ -6,7 +6,7 @@
         var login_id = {{ Auth::user()->id }};
         var token = "{{ csrf_token() }}";
 
-        $(document).ready(function () {
+        $(document).ready(function() {
             $('department').on('change', changePositions());
         });
 
@@ -49,17 +49,24 @@
 
 @section('content')
     <div class="container" style="margin-top: 0px; margin-left: 225px; width:83%">
-        <h1 class="page-header">Add Employee</h1>
+        <h1 class="page-header">Edit Employee</h1>
         <div class="panel-body">
-            <form class="form-horizontal" method="POST" action="/admin/emp_mgnt/employee">
+            <form class="form-horizontal" method="POST" action="/admin/emp_mgnt/employee/{{ $employee['0']->eid }}">
                 {{ csrf_field() }}
+                {{ method_field('PATCH') }}
 
                 <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
                     <label for="email" class="col-md-4 control-label">Email</label>
 
                     <div class="col-md-6">
-                        <input id="email" type="text" class="form-control" name="email"
-                            value="{{ $employee['0']->email }}" required autofocus disabled>
+
+                        <select name="email" id="email" class="form-control" required autofocus readonly>
+                            @foreach ($users as $user)
+                                @if ($user->email == $employee[0]->email)
+                                    <option selected value="{{ $user }}">{{ $user->email }}</option>
+                                @endif
+                            @endforeach
+                        </select>
 
                         @if ($errors->has('email'))
                             <span class="help-block">
@@ -178,8 +185,8 @@
                     <div class="col-md-6">
                         {{-- <input id="dept_id" type="text" class="form-control" name="dept_id" 
                             required autofocus> --}}
-                        <select name="department" id="department" onchange="changePositions();"
-                            class="form-control" required autofocus>
+                        <select name="department" id="department" onchange="changePositions();" class="form-control"
+                            required autofocus>
                             <option value="">Open this select menu</option>
                             @foreach ($departments as $department)
                                 <option @if ($employee['0']->dname == $department->name)
