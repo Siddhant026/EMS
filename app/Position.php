@@ -28,8 +28,13 @@ class Position extends Model
         Position::where('id', '=', $id)->update(array('name' => $name, 'dept_id' => $dept_id));
     }
 
-    public function get_position($where)
+    public function get_position($name, $dept_id)
     {
+        if (empty($dept_id)) {
+            $where = [['name', 'like', '%' . $name . '%']];
+        } else {
+            $where = [['name', 'like', '%' . $name . '%'], ['dept_id', '=', $dept_id]];
+        }
         return Position::where($where)
             ->get();
     }

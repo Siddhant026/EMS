@@ -6,7 +6,7 @@
                     <i class="fa fa-fw fa-angle-down pull-right"></i></a>
                 <ul id="submenu-1" class="collapse">
                     <li><a href="/admin/emp_mgnt/employee"><i class="fa fa-angle-double-right"></i> EMPLOYEE</a></li>
-                    <li><a href="#"><i class="fa fa-angle-double-right"></i> MANAGER</a></li>
+                    <li><a href="/admin/emp_mgnt/manager"><i class="fa fa-angle-double-right"></i> MANAGER</a></li>
                     {{-- <li><a href="#"><i class="fa fa-angle-double-right"></i> SUBMENU 1.3</a></li> --}}
                 </ul>
             </li>

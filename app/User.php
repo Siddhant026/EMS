@@ -37,14 +37,21 @@ class User extends Authenticatable
         return $this->hasOne(Employee::class);
     }
 
+    public function update_user_role($id, $role)
+    {
+        User::where('id', $id)
+            ->update(array('role' => $role));
+    }
+
     public function update_user($id, $name, $email, $password)
     {
         User::where('id', $id)
-            ->update(array('name' => $name, 'email' => $email, 'password' => $email));
+            ->update(array('name' => $name, 'email' => $email, 'password' => $password));
     }
 
-    public function get_user($where)
+    public function get_user($name, $email, $role)
     {
+        $where = [['name', 'like', '%' . $name . '%'], ['email', 'like', '%' . $email . '%'], ['role', 'like', '%' . $role . '%']];
         return User::where($where)
             ->get();
     }

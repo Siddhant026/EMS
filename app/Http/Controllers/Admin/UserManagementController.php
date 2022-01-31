@@ -128,10 +128,10 @@ class UserManagementController extends Controller
             }
             //error_log('inside filter');
 
-            $where = [['name', 'like', '%' . $name . '%'], ['email', 'like', '%' . $email . '%'], ['role', 'like', '%' . $role . '%']];
+            
 
             $user = new User();
-            $users = $user->get_user($where);
+            $users = $user->get_user($name, $email, $role);
 
             $data = array(
                 'users' => $users

@@ -40,6 +40,9 @@ Route::middleware(['admin', 'auth'])->group(function () {
     Route::get('/position_filter', 'Admin\PositionController@filter'); 
     Route::resource('/admin/emp_mgnt/employee', 'Admin\EmployeeController');
     Route::get('/employee_filter', 'Admin\EmployeeController@filter');
+    Route::resource('/admin/emp_mgnt/manager', 'Admin\ManagerController');
+    Route::get('/assign_emp_to_manager/{employee_id}/{manager_id}', 'Admin\ManagerController@add_emp');
+    Route::delete('/remove_manager_from_employee/{employee_id}', 'Admin\ManagerController@remove_emp');
 });
 
 Route::get('/sendEmail', function() {

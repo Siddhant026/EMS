@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Position;
 use App\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class EmployeeController extends Controller
@@ -20,7 +21,7 @@ class EmployeeController extends Controller
     public function index()
     {
         $departments = department::all();
-        return view('admin.emp_mgnt.show', compact('departments'));
+        return view('admin.emp_mgnt.employee.show', compact('departments'));
     }
 
     /**
@@ -33,7 +34,7 @@ class EmployeeController extends Controller
         $users = User::all();
         $departments = department::all();
         $positions = Position::all();
-        return view('admin.emp_mgnt.create', compact('users', 'departments', 'positions'));
+        return view('admin.emp_mgnt.employee.create', compact('users', 'departments', 'positions'));
         //['users' => $]
     }
 
@@ -55,8 +56,17 @@ class EmployeeController extends Controller
         $this->validator(array("_token" => $request->all()['_token'], "email" => $user->id, "address" => $request->all()['address'], "pincode" => $request->all()['pincode'], "dob" => $dob, "date_of_joining" => $date_of_joining, "role" => $request->all()['role'], "department" => $department->id, "position" => $request->all()['position'],))->validate();
 
         $employee = new Employee();
-        $employee->create_function($user->id, $request->all()['address'], $request->all()['pincode'], $dob, $date_of_joining, $request->all()['position'], $request->all()['role']);
+        $user = new User();
 
+        DB::beginTransaction();
+
+        try {
+            $employee->create_function($user->id, $request->all()['address'], $request->all()['pincode'], $dob, $date_of_joining, $request->all()['position'], $request->all()['role']);
+            $user->update_user_role($user->id, $request->all()['role']);
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+        }
         return redirect('/admin/emp_mgnt/employee');
     }
 
@@ -81,16 +91,19 @@ class EmployeeController extends Controller
     {
         $date_of_joiningtime = strtotime('');
         $date_of_joining = date('Y-m-d', $date_of_joiningtime);
-
-        $where = [['employees.id', '=', $id]];
+        $name = '';
+        $pincode = '';
+        $dept_id = '';
+        $manager_id = '';
+        $role = '';
 
         $employee = new Employee();
-        $employee = $employee->show_emp($where, $date_of_joining);
+        $employee = $employee->show_emp($id, $name, $pincode, $dept_id, $date_of_joining, $manager_id, $role);
         //$employee = Employee::find($id);
         $users = User::all();
         $departments = department::all();
         $positions = Position::all();
-        return view('admin.emp_mgnt.edit', compact('employee', 'users', 'departments', 'positions'));
+        return view('admin.emp_mgnt.employee.edit', compact('employee', 'users', 'departments', 'positions'));
     }
 
     /**
@@ -112,7 +125,20 @@ class EmployeeController extends Controller
         $this->validator_without_email(array("_token" => $request->all()['_token'], "address" => $request->all()['address'], "pincode" => $request->all()['pincode'], "dob" => $dob, "date_of_joining" => $date_of_joining, "role" => $request->all()['role'], "department" => $department->id, "position" => $request->all()['position'],))->validate();
 
         $employee = new Employee();
-        $employee->update_emp($id, $request->all()['address'], $request->all()['pincode'], $dob, $date_of_joining, $request->all()['position'], $request->all()['role'], $user->id);
+        $user = new User();
+
+        DB::beginTransaction();
+
+        try {
+            $employee->update_emp($id, $request->all()['address'], $request->all()['pincode'], $dob, $date_of_joining, $request->all()['position'], $request->all()['role'], $user->id);
+            $user->update_user_role($user->id, $request->all()['role']);
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollback();
+            throw $th;
+        }
+
+        
 
         return redirect('/admin/emp_mgnt/employee');
     }
@@ -165,6 +191,7 @@ class EmployeeController extends Controller
     {
         //dd($request->all());
         if ($request->ajax()) {
+            $eid = '';
             $name = $request->get('name');
             $dept_id = $request->get('dept_id');
             $pincode = $request->get('pincode');
@@ -172,15 +199,11 @@ class EmployeeController extends Controller
             $date_of_joining = $request->get('date_of_joining');
             $date_of_joiningtime = strtotime($date_of_joining);
             $date_of_joining = date('Y-m-d', $date_of_joiningtime);
-
-            if (empty($dept_id)) {
-                $where = [['users.name', 'like', '%' . $name . '%'], ['pincode', 'like', '%' . $pincode . '%']];
-            } else {
-                $where = [['users.name', 'like', '%' . $name . '%'], ['dept_id', '=', $dept_id], ['pincode', 'like', '%' . $pincode . '%']];
-            }
+            //$manager_id = $request->get('manager_id');
+            $role = '';
 
             $employee = new Employee();
-            $employees = $employee->show_emp($where, $date_of_joining);
+            $employees = $employee->show_emp($eid, $name, $pincode, $dept_id, $date_of_joining, '', $role);
 
             $data = array(
                 'employees' => $employees

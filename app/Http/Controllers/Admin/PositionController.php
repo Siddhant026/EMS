@@ -113,14 +113,9 @@ class PositionController extends Controller
         if ($request->ajax()) {
             $name = $request->get('name');
             $dept_id = $request->get('dept_id');
-            if (empty($dept_id)) {
-                $where = [['name', 'like', '%' . $name . '%']];
-            } else {
-                $where = [['name', 'like', '%' . $name . '%'], ['dept_id', '=', $dept_id]];
-            }
 
             $position = new Position();
-            $positions = $position->get_position($where);
+            $positions = $position->get_position($name, $dept_id);
 
             $departments = department::all();
             $data = array(
