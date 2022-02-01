@@ -77,7 +77,7 @@
             @if (Auth::user()->role == App\User::ADMIN_ROLE)
                 @include('layouts.admin_sidebar')
             @else
-
+                @include('layouts.emp_sidebar')
             @endif
             @yield('content')
         @endif

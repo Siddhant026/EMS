@@ -138,7 +138,7 @@ class EmployeeController extends Controller
             throw $th;
         }
 
-        
+
 
         return redirect('/admin/emp_mgnt/employee');
     }
@@ -190,25 +190,58 @@ class EmployeeController extends Controller
     public function filter(Request $request)
     {
         //dd($request->all());
+        $eid = '';
+        $name = $request->get('name');
+        $dept_id = $request->get('dept_id');
+        $pincode = $request->get('pincode');
+        //print_r(Employee::find(2));
+        $date_of_joining = $request->get('date_of_joining');
+        $date_of_joiningtime = strtotime($date_of_joining);
+        $date_of_joining = date('Y-m-d', $date_of_joiningtime);
+        //$manager_id = $request->get('manager_id');
+        $role = '';
+
+        $employee = new Employee();
+        $employees = $employee->show_emp($eid, $name, $pincode, $dept_id, $date_of_joining, '', $role);
+
+        $data = array(
+            'employees' => $employees
+        );
         if ($request->ajax()) {
-            $eid = '';
-            $name = $request->get('name');
-            $dept_id = $request->get('dept_id');
-            $pincode = $request->get('pincode');
-            //print_r(Employee::find(2));
-            $date_of_joining = $request->get('date_of_joining');
-            $date_of_joiningtime = strtotime($date_of_joining);
-            $date_of_joining = date('Y-m-d', $date_of_joiningtime);
-            //$manager_id = $request->get('manager_id');
-            $role = '';
-
-            $employee = new Employee();
-            $employees = $employee->show_emp($eid, $name, $pincode, $dept_id, $date_of_joining, '', $role);
-
-            $data = array(
-                'employees' => $employees
-            );
             echo json_encode($data);
+        } else {
+            return json_encode($data);
         }
+        // return json_encode($data);
+    }
+
+    function filter_api(Request $request)
+    {
+        $eid = '';
+        $name = $request->get('name');
+        $dept_id = $request->get('dept_id');
+        $pincode = $request->get('pincode');
+        $date_of_joining = $request->get('date_of_joining');
+        $date_of_joiningtime = strtotime($date_of_joining);
+        $date_of_joining = date('Y-m-d', $date_of_joiningtime);
+        $role = '';
+
+        $page = $request->get('page');
+
+        if (!isset($page)) {
+            $page = 1;
+        } 
+
+        $limit = 1;
+
+        $skip = ($page - 1) * $limit;
+
+        $employee = new Employee();
+        $employees = $employee->show_emp_pagination($eid, $name, $pincode, $dept_id, $date_of_joining, '', $role, $limit, $skip);
+
+        $data = array(
+            'employees' => $employees
+        );
+        return json_encode($data);
     }
 }

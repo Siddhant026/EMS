@@ -45,6 +45,8 @@ Route::middleware(['admin', 'auth'])->group(function () {
     Route::delete('/remove_manager_from_employee/{employee_id}', 'Admin\ManagerController@remove_emp');
 });
 
+// Route::get('/employee_filter', 'Admin\EmployeeController@filter');
+
 Route::get('/sendEmail', function() {
     //HighPriority::dispatch();
     dispatch((new HighPriority)->onQueue('high'));
