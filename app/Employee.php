@@ -54,6 +54,7 @@ class Employee extends Model
 
     public function show_emp_pagination($eid = '', $uname = '', $pincode = '', $dept_id = '',  $date_of_joining = '', $manager_id = '', $role = '', $limit, $skip)
     {
+        $limit = $limit + 1;
         $where = [['users.name', 'like', '%' . $uname . '%'], ['pincode', 'like', '%' . $pincode . '%']];
         if (!empty($eid)) {
             array_push($where, ['employees.id', '=', $eid]);

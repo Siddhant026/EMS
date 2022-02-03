@@ -6,6 +6,7 @@ use App\department;
 use App\Employee;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\FilterAPI;
 use App\Position;
 use App\User;
 use Illuminate\Support\Facades\DB;
@@ -215,33 +216,57 @@ class EmployeeController extends Controller
         // return json_encode($data);
     }
 
-    function filter_api(Request $request)
+    function filter_api(FilterAPI $request)
     {
-        $eid = '';
+        $limit = 1;
+        $eid = $request->get('eid');
         $name = $request->get('name');
         $dept_id = $request->get('dept_id');
         $pincode = $request->get('pincode');
         $date_of_joining = $request->get('date_of_joining');
         $date_of_joiningtime = strtotime($date_of_joining);
         $date_of_joining = date('Y-m-d', $date_of_joiningtime);
-        $role = '';
+        $role = $request->get('role');
 
         $page = $request->get('page');
-
-        if (!isset($page)) {
-            $page = 1;
-        } 
-
-        $limit = 1;
 
         $skip = ($page - 1) * $limit;
 
         $employee = new Employee();
-        $employees = $employee->show_emp_pagination($eid, $name, $pincode, $dept_id, $date_of_joining, '', $role, $limit, $skip);
+        try {
+            $employees = $employee->show_emp_pagination($eid, $name, $pincode, $dept_id, $date_of_joining, '', $role, $limit, $skip);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'success'   => false,
+                'message'   => 'Database errors',
+                'error'      => $th
+              ], 500);
+        }
 
+        if (count($employees) == 0) {
+            return response()->json([
+                'success'   => false,
+                'message'   => 'Data over',
+                'solution'      => 'try previous page'
+              ], 404);
+        }
+        
+        if (count($employees) > $limit) {
+            $has_next = true;
+            $employees->pop();
+        } else {
+            $has_next = false;
+        }
+        
         $data = array(
+            'success' => true,
+            'limit' => $limit,
+            'has next' => $has_next,
+            'count of employees' => count($employees),
             'employees' => $employees
         );
-        return json_encode($data);
+
+        return response()->json($data);
     }
 }
